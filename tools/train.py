@@ -68,6 +68,24 @@ def parse_args():
         "is allowed.",
     )
     parser.add_argument(
+        "--lr",
+        type=float,
+        default=0.01,
+        help="set lr",
+    )
+    parser.add_argument(
+        "--momentum",
+        type=float,
+        default=0.9,
+        help="set momentum",
+    )
+    parser.add_argument(
+        "--weight_decay",
+        type=float,
+        default=0.00001,
+        help="set weight_decay",
+    )
+    parser.add_argument(
         "--launcher",
         choices=["none", "pytorch", "slurm", "mpi"],
         default="none",
@@ -94,6 +112,15 @@ def main():
     args = parse_args()
 
     cfg = Config.fromfile(args.config)
+    #print(cfg.optimizer)
+    #print(cfg.lr_config)
+    #print(cfg.keys())
+
+    cfg.optimizer.lr=args.lr
+    cfg.optimizer.momentum=args.momentum
+    cfg.optimizer.weight_decay=args.weight_decay
+
+
     if args.cfg_options is not None:
         cfg.merge_from_dict(args.cfg_options)
     # import modules from string list.
@@ -154,6 +181,8 @@ def main():
     # log some basic info
     logger.info(f"Distributed training: {distributed}")
     logger.info(f"Config:\n{cfg.pretty_text}")
+    print(cfg.optimizer)
+    #print(fsdfds)
 
     # set random seeds
     if args.seed is not None:
